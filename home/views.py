@@ -68,3 +68,6 @@ def get_json():
     # Store the data from API
     json_data = response.json()
     return json_data
+
+def tracking(request):
+    return render(request, 'tracking.html')
