@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Login{% endblock  %}
+{% block content %}
+
+<body class="bg-gray-100">
+    <div class="flex flex-col items-center justify-center h-screen">
+      <h1 class="text-3xl font-bold mb-4">Login Page</h1>
+      <form class="w-full max-w-sm">
+        <div class="mb-4">
+          <label class="block text-gray-700 font-bold mb-2" for="username">
+            Username
+          </label>
+          <input
+            class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="username"
+            type="text"
+            placeholder="Enter your username"
+          />
+        </div>
+        <div class="mb-4">
+          <label class="block text-gray-700 font-bold mb-2" for="password">
+            Password
+          </label>
+          <input
+            class="appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+            id="password"
+            type="password"
+            placeholder="Enter your password"
+          />
+        </div>
+        <div class="mb-4">
+          <label class="block text-gray-700 font-bold mb-2" for="role">
+            Role
+          </label>
+          <select
+            class="appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+            id="role"
+          >
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+        <div class="flex items-center justify-between">
+          <button
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="button"
+            id="login-btn"
+          >
+            Login
+          </button>
+        </div>
+      </form>
+    </div>
+    <!-- JavaScript -->
+    <script>
+      const loginBtn = document.querySelector("#login-btn");
+
+      loginBtn.addEventListener("click", () => {
+        const username = document.querySelector("#username").value;
+        const password = document.querySelector("#password").value;
+        const role = document.querySelector("#role").value;
+
+        if (role === "admin" && username === "admin" && password === "admin1234") {
+          window.location.href = "/dashboard";
+        } else {
+          alert("Invalid credentials");
+        }
+      });
+    </script>
+  </body>
+
+{% endblock  %}

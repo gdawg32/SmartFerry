@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Booking{% endblock  %}
+{% block content %}
+
+
+ <div class="container mx-auto">
+        <h1 class="text-2xl font-bold mb-4">Book a Ticket</h1>
+
+ {% if success_message %}
+ <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+    <strong class="font-bold"> {{ success_message }} </strong>
+</div>
+{% endif %}
+
+{% if form.errors %}
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+        <strong class="font-bold">Please correct the errors below:</strong>
+        {% for key, value in form.errors.items %}
+            {{ value }}
+        {% endfor %}
+    </div>
+{% endif %}
+
+
+<form method="POST" class="max-w-xl mx-auto">
+    <div class="mb-4 py-4">
+    {% csrf_token %}
+        <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2" for="name">
+                Full Name
+              </label>
+            {{ form.name }}
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2" for="email">
+                Email Address
+              </label>
+            {{ form.email }}
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2" for="phone">
+                Phone Number
+              </label>
+            {{ form.phone }}
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2" for="departure">
+                Departure Port
+              </label>
+            {{ form.departure_port }}
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2" for="arrival">
+                Arrival Port
+              </label>
+            {{ form.arrival_port }}
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2" for="date">
+                Date of Travel
+              </label>
+            {{ form.date }}
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2" for="time">
+                Time of Travel
+                </label>
+            {{ form.time }}
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2" for="passengers">
+                Number of Passengers
+              </label>
+            {{ form.num_passengers }}
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2" for="comments">
+                Comments or Special Requests
+              </label>
+            {{ form.comments }}
+        </div>
+    </div>
+    <div class="text-center mt-4">
+        <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Book Now</button>
+    </div>
+</form>
+</div>
+
+{% endblock  %}
