@@ -24,3 +24,9 @@ class Ticket(models.Model):
 
     def __str__(self):
         return self.name
+    
+class IRSensorValue(models.Model):
+    value = models.IntegerField()
+
+class DHTSensorValue(models.Model):
+    temperature = models.IntegerField()

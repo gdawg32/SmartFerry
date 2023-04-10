@@ -13,25 +13,58 @@
     <div class="grid grid-cols-3 gap-4">
       <div class="bg-white p-4 rounded-lg">
         <h3 class="text-gray-600 text-lg font-semibold mb-2">Number of People Inside</h3>
-        <p class="text-gray-900 text-2xl font-bold">81</p>
+        <p id="data-display" class="text-gray-900 text-2xl font-bold">0</p>
       </div>
       <div class="bg-white p-4 rounded-lg">
         <h3 class="text-gray-600 text-lg font-semibold mb-2">Number of Seats Occupied</h3>
-        <p class="text-gray-900 text-2xl font-bold">43</p>
+        <p id="seats-occupied" class="text-gray-900 text-2xl font-bold">0</p>
       </div>
       <div class="bg-white p-4 rounded-lg">
         <h3 class="text-gray-600 text-lg font-semibold mb-2">Number of vacant seats</h3>
-        <p class="text-gray-900 text-2xl font-bold">0</p>
+        <p id="seats-left" class="text-gray-900 text-2xl font-bold">43</p>
       </div>
     </div>
   </div>
+  <a href="{% url 'reset_value' %}" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold mb-2 py-2 px-4 rounded">Reset Value</a>
 
-  
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<script>
+  // AJAX request to the server
+  function getData() {
+    $.ajax({
+      url: "/ajax_data/", 
+      type: "GET",
+      dataType: "json",
+      success: function(data) {
+        const totalSeats = 43;
+        const seatsLeft = totalSeats - data.IRsensor_value < 0 ? 0 : totalSeats - data.IRsensor_value;
+        const seatsOccupied = totalSeats - seatsLeft;
+        // Update the data display with the returned data
+        $("#data-display").text(data.IRsensor_value);
+        $("#seats-left").text(seatsLeft);
+        $("#seats-occupied").text(seatsOccupied);
+        $("#dht").text(data.DTHsensor_value + "°C");
+      },
+      error: function(error) {
+        console.log("Error:", error);
+      }
+    });
+  }
+
+  // Call the getData function every 1.5 seconds
+  setInterval(getData, 1500);
+</script>
+
+
+
+
+
   <div class="bg-gray-100 p-4 rounded-lg">
     <h2 class="text-lg font-semibold mb-2">Engine Temperature</h2>
     <div class="flex items-center">
       <div class="h-16 w-16 mr-4 rounded-full bg-blue-500 flex items-center justify-center">
-        <span class="text-white text-xl font-bold">27°C</span>
+        <span id="dht" class="text-white text-xl font-bold">0°C</span>
       </div>
     </div>
   </div>

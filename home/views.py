@@ -3,7 +3,11 @@ from django.http import HttpResponse
 from .models import *
 from .forms import TicketForm
 import requests
-
+import serial
+import time
+from django.http import JsonResponse, response
+from . import ard_sensor as ard
+import json
 
 
 
@@ -45,7 +49,11 @@ def ticket(request):
 
 def dashboard(request):
     weather = get_json()
-    context = {
+    sensor = ard.getSensorData()
+    print(sensor)
+    if sensor != None:
+    #ir = ard.getIRSensorData()
+        context = {
         'weather': weather['weather'][0]['main'],
         'description': weather['weather'][0]['description'].capitalize(),
         'visibility': weather['visibility'],
@@ -55,7 +63,26 @@ def dashboard(request):
         'humidity': weather['main']['humidity'],
         'sea_level': weather['main']['sea_level'],
         'wind': weather['wind']['speed'],
+
+        'dht': sensor['Temp_Sensor'],
+        'ir': sensor['IR_Sensor'],
     }
+    else:
+        context = {
+        'weather': weather['weather'][0]['main'],
+        'description': weather['weather'][0]['description'].capitalize(),
+        'visibility': weather['visibility'],
+        'temp': round(int(weather['main']['temp'])),
+
+        'pressure': weather['main']['pressure'],
+        'humidity': weather['main']['humidity'],
+        'sea_level': weather['main']['sea_level'],
+        'wind': weather['wind']['speed'],
+
+        'dht': 0,
+        'ir': 0,
+    }    
+
     return render(request, 'dashboard.html', context)
 
 
@@ -71,3 +98,38 @@ def get_json():
 
 def tracking(request):
     return render(request, 'tracking.html')
+
+
+def ajax_data(request):
+    sensor_json = ard.getSensorData()
+    if sensor_json == None:
+        sensor_json = {'IR_Sensor': 0, 'Temp_Sensor': 0}
+    else:
+        IRsensor_value = sensor_json['IR_Sensor']
+        DTHsensor = sensor_json['Temp_Sensor']
+        obj1 = IRSensorValue.objects.first()
+        obj2 = DHTSensorValue.objects.first()
+        if obj1:
+            print("me here")
+            obj1.value += IRsensor_value
+            obj1.save()
+        else:
+            IRSensorValue.objects.create(value=IRsensor_value)
+
+        if obj2:
+            obj2.temperature = DTHsensor
+            obj2.save()
+        else:
+            DHTSensorValue.objects.create(temperature=DTHsensor)
+
+    print("DB", obj1.value)
+    json_data = {'IRsensor_value': obj1.value, 'DTHsensor_value': obj2.temperature}
+    print(json_data)
+    return JsonResponse(json_data, safe=False, content_type='application/json')
+
+
+def reset_value(request):
+    my_model = IRSensorValue.objects.first() # Get the first instance of the model
+    my_model.value = 0 # Reset the value to zero
+    my_model.save() # Save the changes to the database
+    return dashboard(request)
