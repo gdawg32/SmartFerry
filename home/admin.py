@@ -4,3 +4,4 @@ from .models import *
 # Register your models here.
 admin.site.register(Vaikom)
 admin.site.register(Ticket)
+admin.site.register(IRSensorValue)

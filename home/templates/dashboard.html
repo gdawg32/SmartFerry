@@ -5,9 +5,112 @@
 
 <div class="container mx-auto px-4 mt-8">
     <h1 class="text-3xl font-bold mb-8">Welcome to the Admin Dashboard</h1>
-    <p class="text-gray-700 mb-4">You can use this dashboard to manage your website content, user accounts, and more.</p>
-    <p class="text-gray-700 mb-4">To get started, select an option from the menu on the left.</p>
+    <p class="text-gray-700 mb-4">Get started!</p>
   </div>
+
+  <div class="p-4 bg-gray-100 rounded-lg">
+    <h2 class="text-lg font-semibold mb-4">Seat Occupancy</h2>
+    <div class="grid grid-cols-3 gap-4">
+      <div class="bg-white p-4 rounded-lg">
+        <h3 class="text-gray-600 text-lg font-semibold mb-2">Number of People Inside</h3>
+        <p id="data-display" class="text-gray-900 text-2xl font-bold">0</p>
+      </div>
+      <div class="bg-white p-4 rounded-lg">
+        <h3 class="text-gray-600 text-lg font-semibold mb-2">Number of Seats Occupied</h3>
+        <p id="seats-occupied" class="text-gray-900 text-2xl font-bold">0</p>
+      </div>
+      <div class="bg-white p-4 rounded-lg">
+        <h3 class="text-gray-600 text-lg font-semibold mb-2">Number of vacant seats</h3>
+        <p id="seats-left" class="text-gray-900 text-2xl font-bold">43</p>
+      </div>
+    </div>
+  </div>
+  <a href="{% url 'reset_value' %}" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold mb-2 py-2 px-4 rounded">Reset Value</a>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<script>
+  // AJAX request to the server
+  function getData() {
+    $.ajax({
+      url: "/ajax_data/", 
+      type: "GET",
+      dataType: "json",
+      success: function(data) {
+        const totalSeats = 43;
+        const seatsLeft = totalSeats - data.IRsensor_value < 0 ? 0 : totalSeats - data.IRsensor_value;
+        const seatsOccupied = totalSeats - seatsLeft;
+        // Update the data display with the returned data
+        $("#data-display").text(data.IRsensor_value);
+        $("#seats-left").text(seatsLeft);
+        $("#seats-occupied").text(seatsOccupied);
+        $("#dht").text(data.DTHsensor_value + "°C");
+      },
+      error: function(error) {
+        console.log("Error:", error);
+      }
+    });
+  }
+
+  // Call the getData function every 1.5 seconds
+  setInterval(getData, 1500);
+</script>
+
+
+
+
+
+  <div class="bg-gray-100 p-4 rounded-lg">
+    <h2 class="text-lg font-semibold mb-2">Engine Temperature</h2>
+    <div class="flex items-center">
+      <div class="h-16 w-16 mr-4 rounded-full bg-blue-500 flex items-center justify-center">
+        <span id="dht" class="text-white text-xl font-bold">0°C</span>
+      </div>
+    </div>
+  </div>
+  
+  <div class="bg-blue-200 p-4 rounded-lg shadow-md">
+    <h2 class="text-xl font-bold mb-2">Current Weather</h2>
+    <div class="flex items-center">
+      <div class="text-6xl mr-4">{{temp}}<span class="text-2xl align-top">°C</span></div>
+      <div>
+        <h3 class="text-xl font-bold">Climate:</h3>
+        <p class="text-gray-700 mb-4"> {{ weather }} </p>
+        <h3 class="text-xl font-bold">Description:</h3>
+        <p class="text-gray-700 mb-4"> {{ description }} </p>
+      </div>
+    </div>
+  </div>
+
+<div class="bg-gray-100 px-4 py-2 rounded-md">
+    <h2 class="text-xl font-bold mb-2">Visibility</h2>
+    <div class="flex items-center mt-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M16.879,10.146l1.416-1.416l-4.83-4.829l-1.415,1.415l4.83,4.83z M13.146,6.415l1.415-1.415l-4.83-4.829l-1.415,1.415l4.83,4.829zM10,13c-2.757,0-5-2.243-5-5c0-2.757,2.243-5,5-5s5,2.243,5,5C15,10.757,12.757,13,10,13z M10,4.5c-2.206,0-4,1.794-4,4c0,2.206,1.794,4,4,4s4-1.794,4-4C14,6.294,12.206,4.5,10,4.5z"/>
+        <path fill-rule="evenodd" d="M10,9.5c0.828,0,1.5-0.672,1.5-1.5S10.828,6.5,10,6.5S8.5,7.172,8.5,8S9.172,9.5,10,9.5z"/>
+        <path fill-rule="evenodd" d="M11.354,12.354C11.268,12.46,11.135,12.5,11,12.5s-0.268-0.04-0.354-0.146C10.447,12.268,10.418,12.134,10.5,12.035C10.582,11.935,10.715,11.895,10.85,11.895s0.268,0.04,0.354,0.146c0.176,0.176,0.176,0.464,0,0.639C11.819,12.624,11.686,12.664,11.554,12.664C11.42,12.664,11.287,12.624,11.354,12.354z"/>
+      </svg>
+      <span class="text-lg font-medium text-gray-900"> {{ visibility }} meters</span>
+    </div>
+</div>
+  
+<div class="flex flex-col items-center justify-center bg-gray-100 rounded-lg p-4">
+  <div class="flex items-center mb-2">
+    <i class="fas fa-tachometer-alt mr-2 text-gray-600"></i>
+    <span class="text-gray-700 font-medium">Atmospheric Pressure:</span>
+  </div>
+  <div class="text-3xl font-bold text-blue-600 mb-4">{{pressure}} hPa</div>
+  <div class="flex items-center mb-2">
+    <i class="fas fa-tint mr-2 text-gray-600"></i>
+    <span class="text-gray-700 font-medium">Humidity:</span>
+  </div>
+  <div class="text-3xl font-bold text-blue-600 mb-4">{{humidity}}%</div>
+  <div class="flex items-center mb-2">
+    <i class="fas fa-water mr-2 text-gray-600"></i>
+    <span class="text-gray-700 font-medium">Wind Speed:</span>
+  </div>
+  <div class="text-3xl font-bold text-blue-600">{{wind}} m/s</div>
+</div>
 
 
 
