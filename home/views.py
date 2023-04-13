@@ -5,7 +5,7 @@ from .forms import TicketForm
 import requests
 import serial
 import time
-from django.http import JsonResponse, response
+from django.http import JsonResponse
 from . import ard_sensor as ard
 import json
 

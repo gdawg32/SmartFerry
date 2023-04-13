@@ -5,3 +5,4 @@ from .models import *
 admin.site.register(Vaikom)
 admin.site.register(Ticket)
 admin.site.register(IRSensorValue)
+admin.site.register(DHTSensorValue)
