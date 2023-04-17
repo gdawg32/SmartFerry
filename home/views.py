@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import *
 from .forms import TicketForm
@@ -7,6 +7,7 @@ import serial
 import time
 from django.http import JsonResponse
 from . import ard_sensor as ard
+import subprocess
 import json
 
 
@@ -97,6 +98,7 @@ def get_json():
     return json_data
 
 def tracking(request):
+    print("now")
     return render(request, 'tracking.html')
 
 
@@ -110,7 +112,6 @@ def ajax_data(request):
         obj1 = IRSensorValue.objects.first()
         obj2 = DHTSensorValue.objects.first()
         if obj1:
-            print("me here")
             obj1.value += IRsensor_value
             obj1.save()
         else:

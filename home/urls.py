@@ -10,5 +10,5 @@ urlpatterns = [
     path('dashboard/', views.dashboard, name='dashboard'),
     path('tracking/', views.tracking, name='tracking'),
     path('ajax_data/', views.ajax_data, name='ajax_data'),
-    path('reset_value/', views.reset_value, name='reset_value')
+    path('reset_value/', views.reset_value, name='reset_value'),
 ]

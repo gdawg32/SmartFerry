@@ -1,6 +1,5 @@
 import serial
 import time
-from django.http import JsonResponse
 import json
 
 def getSensorData():
