@@ -23,6 +23,9 @@ def schedule(request):
     context = { 'vaikom': vaikom }
     return render(request, 'schedule.html', context)
 
+def about(request):
+    return render(request, 'about.html')
+
 def login(request):
     return render(request, 'login.html')
 
@@ -49,8 +52,8 @@ def ticket(request):
     return render(request, 'ticket.html', context)
 
 def dashboard(request):
-    weather = get_json()
-    sensor = ard.getSensorData()
+    weather = get_json() # Get the data from OpenWeatherMap API
+    sensor = ard.getSensorData() # Get the data from Arduino
     print(sensor)
     if sensor != None:
     #ir = ard.getIRSensorData()
@@ -99,11 +102,13 @@ def get_json():
 
 def tracking(request):
     print("now")
+    # subprocess.call(['python', 'C:\\Users\\Dell\\Documents\\smart ferry\\SmartFerry\\home\\static\\js\\script.py'])
     return render(request, 'tracking.html')
 
 
 def ajax_data(request):
     sensor_json = ard.getSensorData()
+    print(sensor_json)
     if sensor_json == None:
         sensor_json = {'IR_Sensor': 0, 'Temp_Sensor': 0}
     else:
@@ -123,7 +128,6 @@ def ajax_data(request):
         else:
             DHTSensorValue.objects.create(temperature=DTHsensor)
 
-    print("DB", obj1.value)
     json_data = {'IRsensor_value': obj1.value, 'DTHsensor_value': obj2.temperature}
     print(json_data)
     return JsonResponse(json_data, safe=False, content_type='application/json')

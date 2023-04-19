@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}About Us{% endblock  %}
+{% block content %}
+
+<div class="bg-gray-100 p-8">
+    <h2 class="text-3xl font-bold mb-4">About Us</h2>
+    <p class="text-gray-700 leading-7">
+        Welcome to our final year project! We are a team of aspiring computer hardware engineers from Government Polytechnic College, Cherthala. Our team consists of passionate individuals who have come together to explore the potential of IoT and Django. Our project focuses on leveraging these cutting-edge technologies to build a solution that solves real-world problems.    
+        <br> <br>
+        With IoT, we aim to create a system that can collect data from various sensors and devices and process it in real-time. Django, on the other hand, provides us with a powerful web framework to build and deploy scalable applications that can be accessed from anywhere in the world.
+        <br> <br>
+        We believe that our project will not only showcase our skills as hardware engineers but also provide a valuable contribution to the tech industry. By choosing to work on a project that integrates IoT and Django, we hope to equip ourselves with skills that are highly sought after in the current job market.
+    </p>
+    
+</div>
+  
+
+<div class="bg-gray-100 p-8 grid grid-cols-5 gap-4">
+    <div class="text-center">
+      <img src="https://pbs.twimg.com/profile_images/1534365794074755073/ClZmdMG8_400x400.jpg" alt="Team Member 1" class="mx-auto rounded-full w-24 h-24">
+      <h3 class="mt-4 font-medium">Gauresh P. A.</h3>
+    </div>
+    <div class="text-center">
+      <img src="https://i.kym-cdn.com/entries/icons/facebook/000/004/143/sanjaya2.jpg" alt="Team Member 2" class="mx-auto rounded-full w-24 h-24">
+      <h3 class="mt-4 font-medium">Gaya Sunilkumar</h3>
+    </div>
+    <div class="text-center">
+      <img src="{% static 'images/deone.jpg' %}" alt="Team Member 3" class="mx-auto rounded-full w-24 h-24">
+      <h3 class="mt-4 font-medium">George Deone</h3>
+    </div>
+    <div class="text-center">
+      <img src="https://pbs.twimg.com/media/EtDJaU-XYAEpC6r.jpg" alt="Team Member 4" class="mx-auto rounded-full w-24 h-24">
+      <h3 class="mt-4 font-medium">Jayakrishnan J</h3>
+    </div>
+    <div class="text-center">
+      <img src="https://cdn.vox-cdn.com/thumbor/VKx8R0U9BKwV9SE2_eaVwJtywjU=/0x0:500x375/1400x1050/filters:focal(158x110:238x190):format(jpeg)/cdn.vox-cdn.com/uploads/chorus_image/image/59741997/n4scgse21iuz.0.jpg" alt="Team Member 5" class="mx-auto rounded-full w-24 h-24">
+      <h3 class="mt-4 font-medium">Krishnanand N</h3>
+    </div>
+</div>
+  
+
+
+
+  
+<div class="bg-gray-100 p-8">
+    <h2 class="text-3xl font-bold mb-4">Contact Us</h2>
+    <form class="mb-4">
+      <div class="mb-4">
+        <label class="block text-gray-700 font-bold mb-2" for="name">Name</label>
+        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="name" type="text" placeholder="Enter your name">
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 font-bold mb-2" for="email">Email</label>
+        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="email" type="email" placeholder="Enter your email">
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 font-bold mb-2" for="message">Message</label>
+        <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="message" placeholder="Enter your message"></textarea>
+      </div>
+      <div class="flex justify-center">
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+          Send Message
+        </button>
+      </div>
+    </form>
+    <p class="text-gray-700 leading-7">
+      You can also reach us at <a href="mailto:contact@example.com" class="text-blue-500">contact@example.com</a> or by phone at <a href="tel:+1-555-123-4567" class="text-blue-500">(555) 123-4567</a>.
+    </p>
+  
+</div>
+
+
+
+  
+  
+
+{% endblock %}

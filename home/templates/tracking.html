@@ -12,9 +12,7 @@
         <!-- Create a nested div element with the Leaflet map ID and CSS styling -->
         <div id="map" class="h-full"></div>
       </div>
-
-
-    
+      
     <script>
         let map = L.map('map').setView([0,0], 13);
         let circle, marker;
@@ -34,15 +32,19 @@
       
         // Function to make API call and update map
   function fetchDataAndRefreshMap() {
-    fetch('{% static 'js/data.json' %}')
+    // Store the current zoom level in a variable
+  const currentZoomLevel = map.getZoom();
+    fetch("https://blr1.blynk.cloud/external/api/get?token=91WF7MrryhttcaAhOKW62ylGe9o-40cb&V1&V2&V3&V4")
       .then(response => response.json())
       .then(data => {
-        const lat = data.latitude;
-        const lng = data.longitude;
+        const lat = data.V2;
+        const lng = data.V3;
         if (marker){
           map.removeLayer(marker);
         }
         updateMap(lat, lng);
+        // Set the zoom level back to the stored value
+      map.setZoom(currentZoomLevel);
         setTimeout(fetchDataAndRefreshMap, 2000);
       });
   }

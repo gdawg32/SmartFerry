@@ -12,8 +12,8 @@ while True:
         data = json.load(f)
 
     # Update the latitude and longitude values
-    data['latitude'] -= 0.001
-    data['longitude'] -= 0.001
+    data['latitude'] += 0.001
+    data['longitude'] += 0.001
 
     # Write the updated JSON data to the file
     with open(json_file_path, 'w') as f:
