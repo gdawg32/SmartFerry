@@ -86,28 +86,17 @@ def tracking(request):
 def ajax_data(request):
     sensor_json = get_sensor_value()
     print(sensor_json)
-    if sensor_json == None:
+    if sensor_json is None:
         json_data = {'IRsensor_value': 0, 'DTHsensor_value': 0}
-        print(json_data)
         return JsonResponse(json_data, safe=False, content_type='application/json')
     else:
         DTHsensor = int(sensor_json['V1'])
         IRsensor_value = int(sensor_json['V2'])
-        
-        if int(DTHsensor) > 25:
-            last_sms_time = request.session.get('last_sms_time', 0)
-            cooldown_time = 2 * 60  # 2 minutes in seconds
-            current_time = time.time()
-            if current_time - last_sms_time > cooldown_time:
-                sms.send_sms()
-                print("SMS sent")
-                request.session['last_sms_time'] = current_time
-                request.session.save()  # Save the session after modifying it
-
 
         json_data = {'IRsensor_value': IRsensor_value, 'DTHsensor_value': DTHsensor}
         print(json_data)
         return JsonResponse(json_data, safe=False, content_type='application/json')
+
 
 
 def reset_value(request):
