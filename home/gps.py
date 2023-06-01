@@ -1,10 +1,9 @@
 import serial
 import time
-from django.http import JsonResponse
 import json
 
 def getSensorData():
-    print("------Reading collection starts now------")
+    print("------GPS Data collection------")
     ser = None
     try:
         ser = serial.Serial('COM4', 9600, timeout=1)

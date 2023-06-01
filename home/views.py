@@ -1,13 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import *
 from .forms import TicketForm
 import requests
-import serial
+from . import sms
+from django.http import JsonResponse
 import time
-from django.http import JsonResponse, response
-from . import ard_sensor as ard
-import json
+
 
 
 
@@ -21,6 +20,9 @@ def schedule(request):
     vaikom = Vaikom.objects.all()
     context = { 'vaikom': vaikom }
     return render(request, 'schedule.html', context)
+
+def about(request):
+    return render(request, 'about.html')
 
 def login(request):
     return render(request, 'login.html')
@@ -48,41 +50,22 @@ def ticket(request):
     return render(request, 'ticket.html', context)
 
 def dashboard(request):
-    weather = get_json()
-    sensor = ard.getSensorData()
-    print(sensor)
-    if sensor != None:
+    weather = get_json() # Get the data from OpenWeatherMap API
+    #sensor = ard.getSensorData() # Get the data from Arduino
+    
     #ir = ard.getIRSensorData()
-        context = {
-        'weather': weather['weather'][0]['main'],
-        'description': weather['weather'][0]['description'].capitalize(),
-        'visibility': weather['visibility'],
-        'temp': round(int(weather['main']['temp'])),
+    context = {
+    'weather': weather['weather'][0]['main'],
+    'description': weather['weather'][0]['description'].capitalize(),
+    'visibility': weather['visibility'],
+    'temp': round(int(weather['main']['temp'])),
 
-        'pressure': weather['main']['pressure'],
-        'humidity': weather['main']['humidity'],
-        'sea_level': weather['main']['sea_level'],
-        'wind': weather['wind']['speed'],
+    'pressure': weather['main']['pressure'],
+    'humidity': weather['main']['humidity'],
+    'sea_level': weather['main']['sea_level'],
+    'wind': weather['wind']['speed'],
 
-        'dht': sensor['Temp_Sensor'],
-        'ir': sensor['IR_Sensor'],
-    }
-    else:
-        context = {
-        'weather': weather['weather'][0]['main'],
-        'description': weather['weather'][0]['description'].capitalize(),
-        'visibility': weather['visibility'],
-        'temp': round(int(weather['main']['temp'])),
-
-        'pressure': weather['main']['pressure'],
-        'humidity': weather['main']['humidity'],
-        'sea_level': weather['main']['sea_level'],
-        'wind': weather['wind']['speed'],
-
-        'dht': 0,
-        'ir': 0,
-    }    
-
+}
     return render(request, 'dashboard.html', context)
 
 
@@ -101,35 +84,46 @@ def tracking(request):
 
 
 def ajax_data(request):
-    sensor_json = ard.getSensorData()
+    sensor_json = get_sensor_value()
+    print(sensor_json)
     if sensor_json == None:
-        sensor_json = {'IR_Sensor': 0, 'Temp_Sensor': 0}
+        json_data = {'IRsensor_value': 0, 'DTHsensor_value': 0}
+        print(json_data)
+        return JsonResponse(json_data, safe=False, content_type='application/json')
     else:
-        IRsensor_value = sensor_json['IR_Sensor']
-        DTHsensor = sensor_json['Temp_Sensor']
-        obj1 = IRSensorValue.objects.first()
-        obj2 = DHTSensorValue.objects.first()
-        if obj1:
-            print("me here")
-            obj1.value += IRsensor_value
-            obj1.save()
-        else:
-            IRSensorValue.objects.create(value=IRsensor_value)
+        DTHsensor = int(sensor_json['V1'])
+        IRsensor_value = int(sensor_json['V2'])
+        
+        if int(DTHsensor) > 25:
+            last_sms_time = request.session.get('last_sms_time', 0)
+            cooldown_time = 2 * 60  # 2 minutes in seconds
+            current_time = time.time()
+            if current_time - last_sms_time > cooldown_time:
+                sms.send_sms()
+                print("SMS sent")
+                request.session['last_sms_time'] = current_time
+                request.session.save()  # Save the session after modifying it
 
-        if obj2:
-            obj2.temperature = DTHsensor
-            obj2.save()
-        else:
-            DHTSensorValue.objects.create(temperature=DTHsensor)
 
-    print("DB", obj1.value)
-    json_data = {'IRsensor_value': obj1.value, 'DTHsensor_value': obj2.temperature}
-    print(json_data)
-    return JsonResponse(json_data, safe=False, content_type='application/json')
+        json_data = {'IRsensor_value': IRsensor_value, 'DTHsensor_value': DTHsensor}
+        print(json_data)
+        return JsonResponse(json_data, safe=False, content_type='application/json')
 
 
 def reset_value(request):
-    my_model = IRSensorValue.objects.first() # Get the first instance of the model
-    my_model.value = 0 # Reset the value to zero
-    my_model.save() # Save the changes to the database
+    url = 'https://blr1.blynk.cloud/external/api/update?token=91WF7MrryhttcaAhOKW62ylGe9o-40cb&V2=0'
+    response = requests.get(url)
+    if response.status_code == 200:
+        print('reset successful')
     return dashboard(request)
+
+
+def get_sensor_value():
+    url = 'https://blr1.blynk.cloud/external/api/get?token=91WF7MrryhttcaAhOKW62ylGe9o-40cb&V1&V2&V3&V4'
+    response = requests.get(url)
+    if response.status_code == 200:
+        json_data = response.json()
+        return json_data
+    else:
+        print('Error:', response.status_code)
+        return None
