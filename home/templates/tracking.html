@@ -37,8 +37,8 @@
     fetch("https://blr1.blynk.cloud/external/api/get?token=91WF7MrryhttcaAhOKW62ylGe9o-40cb&V1&V2&V3&V4")
       .then(response => response.json())
       .then(data => {
-        const lat = data.V2;
-        const lng = data.V3;
+        const lat = data.V3;
+        const lng = data.V4;
         if (marker){
           map.removeLayer(marker);
         }
