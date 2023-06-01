@@ -1,0 +1,1 @@
+web: gunicorn SmartFerry.wsgi --log-file -
